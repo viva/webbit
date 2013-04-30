@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.webbitserver.WebServers.createWebServer;
 import static org.webbitserver.testutil.HttpClient.contents;
 import static org.webbitserver.testutil.HttpClient.httpGet;
@@ -76,8 +76,10 @@ public class CookieTest {
             }
         }).start().get();
         URLConnection urlConnection = httpGet(webServer, "/");
-        List<HttpCookie> cookies = cookies(urlConnection);
-        assertEquals(-1, cookies.get(0).getMaxAge());
+        String cookieString = urlConnection.getHeaderField("Set-Cookie");
+        assertNotNull(cookieString);                  // Cookie must exist
+        assertFalse(cookieString.isEmpty());          //   and must not be empty
+        assertFalse(cookieString.contains("MaxAge")); //   and must not contain "MaxAge"
     }
 
     @Test
