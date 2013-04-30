@@ -85,18 +85,20 @@ public class NettyHttpChannelHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final ExceptionEvent e) {
         connectionHelper.fireConnectionException(e);
-        final NettyHttpResponse nettyHttpResponse = new NettyHttpResponse(ctx, new DefaultHttpResponse(HTTP_1_1, INTERNAL_SERVER_ERROR), true, exceptionHandler);
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ctx.setAttachment(IGNORE_REQUEST);
-                    nettyHttpResponse.error(e.getCause());
-                } catch (Exception exception) {
-                    exceptionHandler.uncaughtException(Thread.currentThread(), WebbitException.fromException(exception, ctx.getChannel()));
-                }
-            }
-        });
+        if (ctx.getChannel().isConnected()) {
+        	final NettyHttpResponse nettyHttpResponse = new NettyHttpResponse(ctx, new DefaultHttpResponse(HTTP_1_1, INTERNAL_SERVER_ERROR), true, exceptionHandler);
+	        executor.execute(new Runnable() {
+	            @Override
+	            public void run() {
+	                try {
+	                    ctx.setAttachment(IGNORE_REQUEST);
+	                    nettyHttpResponse.error(e.getCause());
+	                } catch (Exception exception) {
+	                    exceptionHandler.uncaughtException(Thread.currentThread(), WebbitException.fromException(exception, ctx.getChannel()));
+	                }
+	            }
+	        });
+        }
     }
 
 }
