@@ -114,7 +114,8 @@ public class NettyHttpResponse implements org.webbitserver.HttpResponse {
         nettyCookie.setDomain(httpCookie.getDomain());
         nettyCookie.setPath(httpCookie.getPath());
         nettyCookie.setSecure(httpCookie.getSecure());
-        nettyCookie.setMaxAge((int)httpCookie.getMaxAge());
+        if (0 <= (int)httpCookie.getMaxAge())
+        	nettyCookie.setMaxAge((int)httpCookie.getMaxAge());
         nettyCookie.setVersion(httpCookie.getVersion());
         nettyCookie.setDiscard(httpCookie.getDiscard());
         nettyCookie.setHttpOnly(true);
