@@ -36,7 +36,7 @@ abstract class ConnectionHelper {
     }
 
     public void fireConnectionException(final ExceptionEvent e) {
-        if ((e.getCause() instanceof ClosedChannelException) || ((e.getCause() instanceof IOException) && e.getCause().getMessage() == "Connection reset by peer")) {
+        if ((e.getCause() instanceof ClosedChannelException) || e.getCause() instanceof IOException) {
             e.getChannel().close();
         } else {
             final Thread thread = Thread.currentThread();
