@@ -5,6 +5,7 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.webbitserver.WebbitException;
 
+import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.Executor;
 
@@ -35,7 +36,7 @@ abstract class ConnectionHelper {
     }
 
     public void fireConnectionException(final ExceptionEvent e) {
-        if (e.getCause() instanceof ClosedChannelException) {
+        if ((e.getCause() instanceof ClosedChannelException) || ((e.getCause() instanceof IOException) && e.getCause().getMessage() == "Connection reset by peer")) {
             e.getChannel().close();
         } else {
             final Thread thread = Thread.currentThread();
